@@ -14,39 +14,32 @@ modules:
     
     - name: postevil
       cmds:
-      - xargs -r -I{} postevil -d {} -k {{POSTMAN_KEY}} --tokens --subs --wayback --wayback-limit 80 -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{} >> {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/postevil.log < {{SCOPE_FILE}}
+      - xargs -r -I{} postevil -d {} -k {{POSTMAN_KEY}} --tokens --subs --wayback --wayback-limit 80 -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{} < {{SCOPE_FILE}}
 
     - name: iacrawl
       cmds:
-      - xargs -r -I{} iacrawl scan -d {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/iacrawl.json >> {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/iacrawl.logs < {{SCOPE_FILE}}
+      - xargs -r -I{} iacrawl scan -d {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/iacrawl.json < {{SCOPE_FILE}}
 
     - name: s3scan
       cmds:
-      - xargs -r -I{} s3scan scan -d {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/s3scan.md >> {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/s3scan.logs < {{SCOPE_FILE}}
+      - xargs -r -I{} s3scan -d {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/s3scan.md < {{SCOPE_FILE}}
 
     - name: blh
       cmds:
-      - xargs -r -I{} blh-hunter scan -d {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/blh-hunter.json >> {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/blh-hunter.logs < {{SCOPE_FILE}}
+      - xargs -r -I{} blh-hunter -d {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/blh-hunter.json < {{SCOPE_FILE}}
 
     - name: dnsdangling
       cmds:
-      - xargs -r -I{} python3 /opt/dnsdangling/dnsdangle_exploit.py {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/dnsdangling.json >> {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/dnsdangling.logs < {{SCOPE_FILE}}
+      - xargs -r -I{} python3 /opt/dnsdangling/dnsdangle_exploit.py {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/dnsdangling.json < {{SCOPE_FILE}}
 
     - name: orscan
       cmds:
-      - xargs -r -I{} mkdir {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/orscan < {{SCOPE_FILE}}
-      - xargs -r -I{} orscan -d {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/orscan >> {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/orscan.logs < {{SCOPE_FILE}}
+      - xargs -r -I{} orscan -d {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/orscan < {{SCOPE_FILE}}
 
     - name: subdomain_enum
       cmds:
       - mkdir -p {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder
       - subfinder -dL {{SCOPE_FILE}} -silent -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt
-      - cat {{SCOPE_FILE}} {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt | sed -E 's#^https?://##; s#/.*$##; s/[[:space:]]//g' | awk 'NF' | sort -u > {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/all_targets.txt
-
-    - name: fuffing
-      cmds:
-      - xargs -r -I{} mkdir -p {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{} < {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt
-      - xargs -r -I{} ffuf_master {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/ffuf_master >> {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/ffuf_master.logs < {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt
 
     - name: opencode_test
       cmds:

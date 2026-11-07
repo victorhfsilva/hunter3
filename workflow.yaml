@@ -15,7 +15,7 @@ modules:
     
     - name: postevil
       cmds:
-      - xargs -r -I{} postevil -d {} -k {{POSTMAN_KEY}} --tokens --subs --wayback --wayback-limit 80 -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{} < {{SCOPE_FILE}}
+      - xargs -r -I{} postevil -d {} -k {{POSTMAN_KEY}} --tokens -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{} < {{SCOPE_FILE}}
 
     - name: iacrawl
       cmds:

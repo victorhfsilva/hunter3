@@ -3,6 +3,7 @@ vars:
   OUTPUT_FOLDER: /output/workflow
   SCOPE_FILE: /opt/scope-scraper/data/scopes/all_scope_domains_new.txt
   POSTMAN_KEY: {{POSTMAN_KEY}}
+  HUNTER_FOLDER: /home/vps/Tools/hunter3
 
 parallel: false
 modules:
@@ -43,11 +44,12 @@ modules:
 
     - name: opencode_test
       cmds:
-      - xargs -r -I{} opencode run --auto --command hunt -- "https://{}" "--out {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/opencode/" < {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt
+      - python3 {{HUNTER_FOLDER}}/hunter/hunter.py --targets-file {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt --out {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/openc
 
     - name: opencode_analysis
       cmds:
-      - xargs -r -I{} opencode run --auto --command analysis -- "{{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)" < {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt
+      - mkdir -p {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/triager
+      - python3 {{HUNTER_FOLDER}}/triager/triager.py {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d) --out {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/triager
 
 
 

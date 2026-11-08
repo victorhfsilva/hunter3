@@ -41,10 +41,11 @@ modules:
       cmds:
       - mkdir -p {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder
       - subfinder -dL {{SCOPE_FILE}} -silent -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt
+      - cat {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt | httpx -silent -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/active_subdomains.txt
 
     - name: opencode_test
       cmds:
-      - python3 {{HUNTER_FOLDER}}/hunter/hunter.py --targets-file {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt --out {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/openc
+      - python3 /home/vps/Tools/hunter3/hunter/hunter.py --targets-file {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/active_subdomains.txt --out {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/opencode
 
     - name: opencode_analysis
       cmds:

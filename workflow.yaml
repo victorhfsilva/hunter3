@@ -50,7 +50,7 @@ modules:
 
     - name: files_triager
       cmds:
-      - xargs -r -I{} /opt/hunter6/bin/hunter6 triage {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{} --authorized --in-scope {} < {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/active_subdomains.txt
+      - xargs -r -I{} /opt/hunter6/bin/hunter6 triage {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{} --authorized --in-scope {} -out {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/hunter6 < {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/active_subdomains.txt
 
 
 

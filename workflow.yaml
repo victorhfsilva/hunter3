@@ -33,24 +33,25 @@ modules:
       cmds:
       - xargs -r -I{} python3 /opt/dnsdangling/dnsdangle_exploit.py {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/dnsdangling.json < {{SCOPE_FILE}}
 
-    - name: orscan
-      cmds:
-      - xargs -r -I{} orscan -d {} -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/orscan < {{SCOPE_FILE}}
-
     - name: subdomain_enum
       cmds:
       - mkdir -p {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder
       - subfinder -dL {{SCOPE_FILE}} -silent -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt
       - cat {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/subdomains.txt | httpx -silent -o {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/active_subdomains.txt
+      - cat {{SCOPE_FILE}} | anew {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/active_subdomains.txt
 
-    - name: opencode_test
+    - name: no_skills_test
       cmds:
-      - python3 /home/vps/Tools/hunter3/hunter/hunter.py --targets-file {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/active_subdomains.txt --out {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/opencode
+      - xargs -r -I{} /opt/hunter4/bin/hunter4 hunt {} --out {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/hunter4 --authorized < {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/active_subdomains.txt
 
-    - name: opencode_analysis
+    - name: skills_test
       cmds:
-      - mkdir -p {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/triager
-      - python3 {{HUNTER_FOLDER}}/triager/triager.py {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d) --out {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/triager
+      - xargs -r -I{} /opt/hunter5/bin/hunter5 hunt {} --out {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{}/hunter5 --authorized < {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/active_subdomains.txt
+
+    - name: files_triager
+      cmds:
+      - xargs -r -I{} /opt/hunter6/bin/hunter6 triage {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/{} --authorized --in-scope {} < {{OUTPUT_FOLDER}}/$(date +%Y-%m-%d)/subfinder/active_subdomains.txt
+
 
 
 
